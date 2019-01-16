@@ -10,9 +10,10 @@ function buildMetadata(sample) {
 
     data = results;
 
-    // Use `.html("") to clear any existing metadata
+    // Select sample-metadata id and store as a variable
     var sample_metadata = d3.select("#sample-metadata")
     
+    // use .html("") to clear any existing metadata
     sample_metadata.html("");
 
     // Use `Object.entries` to add each key and value pair to the panel
@@ -51,17 +52,20 @@ function buildCharts(sample) {
         size: sample_values,
         text: otu_labels
       },
+      hovertext: otu_labels,
       type: 'scatter'
     };
 
     var data = [trace1];
 
     var layout = {
-      title: "Belly Button Bubble"
+      title: "Belly Button Bubble",
+      xaxis: {
+        title: 'OTU ID'}
     };
 
     //plot the bubble chart
-    Plotly.plot("bubble", data, layout);
+    Plotly.newPlot("bubble", data, layout);
   });
   
     // @TODO: Build a Pie Chart
@@ -83,6 +87,7 @@ function buildCharts(sample) {
     var trace2 = {
       values: sample_values.slice(0,10),
       labels: otu_ids.slice(0,10),
+      hovertext: otu_labels,
       type: "pie"
     };
 
@@ -95,7 +100,8 @@ function buildCharts(sample) {
     }
 
     //Plot the pie chart
-    Plotly.plot("pie", data, layout)
+    Plotly.newPlot("pie", data, layout)
+
   });
 };
 
