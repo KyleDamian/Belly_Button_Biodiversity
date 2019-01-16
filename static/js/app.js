@@ -31,42 +31,62 @@ function buildCharts(sample) {
   // @TODO: Use `d3.json` to fetch the sample data for the plots
   var url = `/samples/${sample}`;
   d3.json(url).then(function(results) {
-    //console.log(results);
 
     // @TODO: Build a Bubble Chart using the sample data
+    data = results;
+    console.log(data);
 
-    var bubble = d3.select("#bubble")
-    var data = [results];
-
-    var layout = {
-      x: data.otu.ids,
-      y: data.sample_values,
+    //create variables for the otu_ids, labels, and sample_values
+    var otu_ids = data.otu_ids;
+    var sample_values = data.sample_values;
+    var otu_labels = data.otu_labels;
+    
+    //create trace for bubble chart
+    var trace1 = {
+      x: otu_ids,
+      y: sample_values,
       mode: 'markers',
       marker: {
-        color: 'rgb(31, 119, 180)',
-        size: data.sample_values,
-        text: data.otu_labels
+        color: otu_ids,
+        size: sample_values,
+        text: otu_labels
       },
       type: 'scatter'
     };
 
-    Plotly.plot(bubble, data, layout);
+    var data = [trace1];
 
+    var layout = {
+      title: "Belly Button Bubble"
+    };
+
+    //plot the bubble chart
+    Plotly.plot("bubble", data, layout);
   });
-
-
-
+  
     // @TODO: Build a Pie Chart
     // HINT: You will need to use slice() to grab the top 10 sample_values,
     // otu_ids, and labels (10 each).
 
-  // fetch the sample date fromm /samples route
-  var url = "/samples/<sample>";
+  // fetch the sample data from /samples route
+  var url = `/samples/${sample}`;
   d3.json(url).then(function(results) {
-    console.log(results);
+
+    data = results;
+
+    //create variables for the otu_ids, labels, and sample_values
+    var otu_ids = data.otu_ids;
+    var sample_values = data.sample_values;
+    var otu_labels = data.otu_labels;
 
     //Build a pie Chart
-    var data = [results];
+    var trace2 = {
+      values: sample_values.slice(0,10),
+      labels: otu_ids.slice(0,10),
+      type: "pie"
+    };
+
+    var data = [trace2]
 
     var layout = {
       title: "Belly Button Pie",
@@ -74,23 +94,9 @@ function buildCharts(sample) {
       weight: 500
     }
 
+    //Plot the pie chart
     Plotly.plot("pie", data, layout)
   });
-
-  // //function to update data of pie chart
-  // function updatePlotly (route) {
-  //   Plotly.restyle("pie", "otu_ids", newdata.otu_ids)
-  //   Plotly.restyle("pie", "sample_values", newdata.sample_values)
-  // }
-
-  // // Get new data whenever the dropdown selection changes
-  // function getData(route) {
-  //   console.log(route);
-  //   d3.json(`/${route}`).then(function(data) {
-  //     console.log("newdata", data);
-  //     updatePlotly(data);
-  //   });
-  // };
 };
 
 buildCharts();
